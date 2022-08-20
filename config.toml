@@ -1,0 +1,6 @@
+[api]
+port=":8080"
+
+[db]
+url="mongodb+srv://admin:12345@cluster0.mqgxfpc.mongodb.net/?retryWrites=true&w=majority"
+name="BooksAPI"

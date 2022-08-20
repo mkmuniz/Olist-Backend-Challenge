@@ -1,13 +1,16 @@
 package server
 
 import (
+	"log"
 	"net/http"
 	"olist-challenge/configs"
+	"olist-challenge/src/db"
 	"olist-challenge/src/middlewares"
 )
 
 func Run() {
-
 	configs.Load()
-	http.ListenAndServe(":8080", middlewares.Middleware())
+	db.OpenConnection()
+	log.Printf("Back is running at port %v", configs.GetAPIConfig())
+	http.ListenAndServe(configs.GetAPIConfig(), middlewares.Middleware())
 }

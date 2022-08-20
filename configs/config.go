@@ -6,36 +6,39 @@ import (
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	API APIConfig
-	DB  DBConfig
-}
-
-type APIConfig struct {
-	Port string `json:"port"`
-}
-
-type DBConfig struct {
-	Host string `json:"host"`
-	Port string `json:"port"`
-	User string `json:"user"`
-	Pass string `json:"pass"`
-	Name string `json:"name"`
-}
+var cfg *Config
 
 func init() {
 	viper.SetDefault("api.port", "8080")
-	viper.SetDefault("db.host", "localhost")
-	viper.SetDefault("db.port", "5432")
 }
 
-func Load() {
+func Load() error {
 	viper.SetConfigName("config")
-	viper.SetConfigType("to")
+	viper.SetConfigType("toml")
 	viper.AddConfigPath(".")
 	err := viper.ReadInConfig()
 
 	if err != nil {
 		fmt.Sprintln("Error while loading configs: ", err)
 	}
+
+	cfg = new(Config)
+
+	cfg.API = APIConfig{
+		Port: viper.GetString("api.port"),
+	}
+	cfg.DB = DBConfig{
+		URL:  viper.GetString("db.url"),
+		Name: viper.GetString("db.name"),
+	}
+
+	return nil
+}
+
+func GetAPIConfig() string {
+	return cfg.API.Port
+}
+
+func GetDBConfig() DBConfig {
+	return cfg.DB
 }
