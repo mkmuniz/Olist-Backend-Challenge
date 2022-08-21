@@ -1,9 +1,20 @@
 package book
 
-import "net/http"
+import (
+	"encoding/json"
+	"net/http"
+)
 
 func GetAllController(w http.ResponseWriter, r *http.Request) {
-	GetAllService()
+	res, err := GetAllService()
+
+	if err != nil {
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(res)
 }
 
 func GetOneController(w http.ResponseWriter, r *http.Request) {

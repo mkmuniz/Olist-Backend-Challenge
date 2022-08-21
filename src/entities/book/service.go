@@ -5,25 +5,41 @@ import (
 	"olist-challenge/src/db"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func GetAllService() *mongo.SingleResult {
+func GetAllService() (books bson.M, err error) {
 	conn, err := db.OpenConnection()
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	result := conn.Database.Collection("books").FindOne(conn.Context, bson.D{})
+	result, err := conn.Database.Collection("books").Find(conn.Context, bson.M{})
 
-	defer conn.Client.Disconnect(conn.Context)
+	defer result.Close(conn.Context)
 
-	return result
+	if result.Next(conn.Context) {
+		var books bson.M
+		if err = result.Decode(&books); err != nil {
+			log.Panic(err)
+		}
+		return books, err
+	}
+	return books, err
 }
 
-func GetOneService() {
+func GetOneService(body Book) (books bson.M, err error) {
+	conn, err := db.OpenConnection()
 
+	if err != nil {
+		log.Panic(err)
+	}
+
+	res := conn.Database.Collection("books").FindOne(conn.Context, bson.M{"_id": body.id})
+
+	res.Decode(&books)
+
+	return books, err
 }
 
 func CreateOneService() {
