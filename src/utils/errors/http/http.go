@@ -12,7 +12,6 @@ func (e *HTTPError) Error() string {
 	return e.Detail + " : " + e.Cause.Error()
 }
 
-// ResponseBody returns JSON response body.
 func (e *HTTPError) ResponseBody() ([]byte, error) {
 	body, err := json.Marshal(e)
 	if err != nil {
@@ -21,7 +20,6 @@ func (e *HTTPError) ResponseBody() ([]byte, error) {
 	return body, nil
 }
 
-// ResponseHeaders returns http status code and headers.
 func (e *HTTPError) ResponseHeaders() (int, map[string]string) {
 	return e.Status, map[string]string{
 		"Content-Type": "application/json; charset=utf-8",
