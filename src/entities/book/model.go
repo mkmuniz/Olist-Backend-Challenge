@@ -1,9 +1,8 @@
 package book
 
 type Book struct {
-	id              string `json:"_id"`
-	name            string `json:"name"`
-	edition         string `json:"edition"`
-	publicationYear string `json:"publicationYear"`
-	authors         string `json:"authors"`
+	Name        string `json:"name"`
+	Edition     string `json:"edition"`
+	Publication string `json:"publicationYear"`
+	Authors     string `json:"authors"`
 }
