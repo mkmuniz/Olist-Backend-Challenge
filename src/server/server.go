@@ -11,6 +11,6 @@ import (
 func Run() {
 	configs.Load()
 	db.OpenConnection()
-	log.Printf("Back is running at port %v", configs.GetAPIConfig())
+	log.Printf("API is running at port %v", configs.GetAPIConfig())
 	http.ListenAndServe(configs.GetAPIConfig(), middlewares.Middleware())
 }

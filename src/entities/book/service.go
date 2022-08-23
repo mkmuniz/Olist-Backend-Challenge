@@ -1,7 +1,6 @@
 package book
 
 import (
-	"log"
 	"olist-challenge/src/db"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,13 +11,13 @@ func GetAllService() (books []bson.M, err error) {
 	conn, err := db.OpenConnection()
 
 	if err != nil {
-		log.Panic(err)
+		return books, err
 	}
 
 	result, err := conn.Database.Collection("books").Find(conn.Context, bson.M{})
 
 	if err != nil {
-		log.Panic(err)
+		return books, err
 	}
 
 	result.All(conn.Context, &books)

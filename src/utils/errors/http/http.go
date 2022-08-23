@@ -1,35 +1,40 @@
-package http
+package httperror
 
 import (
 	"encoding/json"
-	"fmt"
+	"net/http"
 )
 
-func (e *HTTPError) Error() string {
-	if e.Cause == nil {
-		return e.Detail
-	}
-	return e.Detail + " : " + e.Cause.Error()
-}
+var resp map[string]any
 
-func (e *HTTPError) ResponseBody() ([]byte, error) {
-	body, err := json.Marshal(e)
+func RequestError(w http.ResponseWriter, r *http.Request, res interface{}, err error) {
+
 	if err != nil {
-		return nil, fmt.Errorf("Error while parsing response body: %v", err)
+		resp = map[string]any{
+			"status":  500,
+			"message": "Error on request",
+			"data":    res,
+		}
+	} else {
+		resp = map[string]any{
+			"status":  200,
+			"message": "Sucess",
+			"data":    res,
+		}
 	}
-	return body, nil
+
+	w.Header().Add("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
 }
 
-func (e *HTTPError) ResponseHeaders() (int, map[string]string) {
-	return e.Status, map[string]string{
-		"Content-Type": "application/json; charset=utf-8",
-	}
-}
+func DecodeError(w http.ResponseWriter, r *http.Request, err error) {
+	if err != nil {
+		resp = map[string]any{
+			"status":  500,
+			"message": "Error on decode body",
+		}
 
-func NewHTTPError(err error, status int, detail string) error {
-	return &HTTPError{
-		Cause:  err,
-		Detail: detail,
-		Status: status,
+		w.Header().Add("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(resp)
 	}
 }

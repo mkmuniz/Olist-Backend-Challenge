@@ -10,5 +10,4 @@ func Routes(r chi.Router) {
 	r.Post("/", CreateOneController)
 	r.Put("/{id}", UpdateOneController)
 	r.Delete("/{id}", DeleteOneController)
-
 }
